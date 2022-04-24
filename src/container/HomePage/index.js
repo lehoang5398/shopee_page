@@ -4,7 +4,6 @@ import TableItem from '../../components/TableItem';
 
 function HomePage(props) {
   const [listSearchItem, setListSearchItem] = useState([]);
-  console.log(listSearchItem);
   return (
     <>
       <SearchBox setListSearchItem={setListSearchItem} />
