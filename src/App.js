@@ -1,23 +1,20 @@
-import logo from './logo.svg';
+import React, { Suspense } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
+import HomePage from './container/HomePage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="row">
+      <div className="col-sm-12">
+        <Suspense fallback={<div>Loading...</div>}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/search-products" element={<HomePage />} />
+            </Routes>
+          </BrowserRouter>
+        </Suspense>
+      </div>
     </div>
   );
 }
