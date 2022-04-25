@@ -63,6 +63,9 @@ function SearchBox({ setListSearchItem }) {
                 </button>
               </form>
             </div>
+            <div className="log-out" >
+              <button className="not-found">Log Out</button>
+            </div>
           </div>
         </nav>
         <div className="example-search navbar-light bg-light">

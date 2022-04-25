@@ -11,6 +11,17 @@ const login = {
       }
     });
   },
+  logoutUser: (params) => {
+    const resource = '/auth/logout';
+    const Token = { refreshToken: params };
+    return axiosClient.post(resource, Token).then((res) => {
+      if (res) {
+        localStorage.removeItem('USER');
+        localStorage.removeItem('ACCESSTOKEN');
+        localStorage.removeItem('REFRESHTOKEN');
+      }
+    });
+  },
 };
 
 export default login;
