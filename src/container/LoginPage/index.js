@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { yupResolver } from '@hookform/resolvers/yup';
-import { React, useRef } from 'react';
+import { React, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -29,8 +30,15 @@ export default function LoginPage() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const token = localStorage.getItem('TOKEN') ?? null;
   const password = useRef({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token !== null) {
+      navigate(HOME_PAGE);
+    }
+  }, [token]);
 
   password.current = watch('password', '');
 
@@ -39,7 +47,7 @@ export default function LoginPage() {
       try {
         await login.loginUser(user);
         reset();
-        // navigate(HOME_PAGE);
+        navigate(HOME_PAGE);
       } catch (error) {
         console.log(error);
       }

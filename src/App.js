@@ -1,34 +1,52 @@
-import React, { Suspense, useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import './App.css';
-import { HOME_PAGE, LOGIN_PAGE } from './configs';
+import { HOME_PAGE, LOGIN_PAGE, NOT_FOUND_PAGE } from './configs';
 import HomePage from './container/HomePage';
 import LoginPage from './container/LoginPage';
-import history from './utils/history';
+import NotFoundPage from './container/NotFoundPage';
 import ProtectedRoute from './configs/ProtedRouter';
 
-import { useNavigate } from 'react-router-dom';
-
-
-const user = localStorage.getItem('USER') ? JSON.parse(localStorage.getItem('USER')) : {};
-
-
-
 function App() {
-   const [isLogin,setIsLogin] = useState(false)
-  const navigate = useNavigate();
-  useEffect(()=>{
-    if(Object.keys(user)?.length > 0){
-      navigate(HOME_PAGE)
-    }
-    
-  },[user])
+  const r = [
+    {
+      exact: true,
+      path: LOGIN_PAGE,
+      element: <LoginPage />,
+    },
+    {
+      exact: true,
+      path: HOME_PAGE,
+      element: (
+        <ProtectedRoute pathRedirect={LOGIN_PAGE}>
+          <HomePage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: NOT_FOUND_PAGE,
+      element: <NotFoundPage />,
+    },
+  ];
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      <Router>
         <Routes>
-          <Route path={LOGIN_PAGE} element={<LoginPage/>}/>
-          <Route path={HOME_PAGE} element={<HomePage/>}/>
+          {r.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              exact={route.exact}
+              element={route.element}
+            />
+          ))}
         </Routes>
+      </Router>
     </Suspense>
   );
 }

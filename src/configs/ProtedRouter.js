@@ -1,16 +1,14 @@
-import { Navigate } from "react-router-dom";
-import { HOME_PAGE, LOGIN_PAGE } from ".";
+import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({
-    user,
-    // redirectPath = HOME_PAGE,
-    children,
-  }) => {
-    if (Object.keys(user)?.length === 0) {
-      return  <Navigate to={LOGIN_PAGE} replace />
-    }
-  
-    return children;
-  };
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('TOKEN') ?? null;
 
-  export default ProtectedRoute;
+  console.log(token);
+  if (token === null) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+export default ProtectedRoute;

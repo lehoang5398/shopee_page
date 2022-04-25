@@ -44,13 +44,11 @@ const PaginationCommon = (props) => {
       const spillOffset = totalNumbers - (pages.length + 1);
 
       switch (true) {
-        // handle: (1) < {5 6} [7] {8 9} (10)
         case hasLeftSpill && !hasRightSpill: {
           const extraPages = range(startPage - spillOffset, startPage - 1);
           pages = [LEFT, ...extraPages, ...pages];
           break;
         }
-        // handle: (1) < {4 5} [6] {7 8} > (10)
         case hasLeftSpill && hasRightSpill:
         default: {
           pages = [LEFT, ...pages, RIGHT];
@@ -89,13 +87,13 @@ const PaginationCommon = (props) => {
             </PaginationItem>
           );
 
-        // return (
-        //   <PaginationItem active={currentPage === index} key={index}>
-        //     <PaginationLink onClick={(e) => onPageChanged(e, page)}>
-        //       {page}
-        //     </PaginationLink>
-        //   </PaginationItem>
-        // );
+        return (
+          <PaginationItem active={currentPage === index} key={index}>
+            <PaginationLink onClick={(e) => onPageChanged(e, page)}>
+              {page}
+            </PaginationLink>
+          </PaginationItem>
+        );
       })}
     </Pagination>
   );

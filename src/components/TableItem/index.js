@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useCallback, useState } from 'react';
 import { APP_API_IMAGE } from '../../configs';
 import PaginationCommon from '../Pagination';
 
 function TableItem({ listSearchItem }) {
+  
   function handleChangePrice(value) {
     const number = value.toString();
     return number.slice(0, 7).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
@@ -120,12 +122,12 @@ function TableItem({ listSearchItem }) {
           </table>
           {NUM_OF_RECORDS > 0 && (
             <PaginationCommon
-            totalRecords={NUM_OF_RECORDS}
-            pageLimit={LIMIT}
-            pageNeighbours={1}
-            onPageChanged={onPageChanged}
-            currentPage={currentPage}
-          />
+              totalRecords={NUM_OF_RECORDS}
+              pageLimit={LIMIT}
+              pageNeighbours={1}
+              onPageChanged={onPageChanged}
+              currentPage={currentPage}
+            />
           )}
         </div>
         <div style={{ width: '1%' }} />

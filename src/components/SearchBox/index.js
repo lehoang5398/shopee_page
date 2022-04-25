@@ -19,7 +19,6 @@ function SearchBox({ setListSearchItem }) {
     const getItemSearch = async () => {
       try {
         const response = await productsApi.searchItem(params);
-        console.log(response);
         setListSearchItem(response);
       } catch (error) {
         console.log('Failed to Fetch Product', error);
@@ -31,7 +30,6 @@ function SearchBox({ setListSearchItem }) {
     <>
       <div className="header-search-items">
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <a></a>
           <button
             className="navbar-toggler"
             type="button"
