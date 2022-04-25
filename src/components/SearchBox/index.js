@@ -8,7 +8,7 @@ function SearchBox({ setListSearchItem }) {
   function handleSearch(data) {
     const params = {
       by: 'relevancy',
-      limit: 10,
+      limit: 50,
       newest: 0,
       order: 'desc',
       page_type: 'search',
@@ -19,6 +19,7 @@ function SearchBox({ setListSearchItem }) {
     const getItemSearch = async () => {
       try {
         const response = await productsApi.searchItem(params);
+        console.log(response);
         setListSearchItem(response);
       } catch (error) {
         console.log('Failed to Fetch Product', error);
