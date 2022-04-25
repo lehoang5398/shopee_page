@@ -8,7 +8,7 @@ function SearchBox({ setListSearchItem }) {
   function handleSearch(data) {
     const params = {
       by: 'relevancy',
-      limit: 50,
+      limit: 100,
       newest: 0,
       order: 'desc',
       page_type: 'search',

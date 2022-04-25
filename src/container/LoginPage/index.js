@@ -39,7 +39,7 @@ export default function LoginPage() {
       try {
         await login.loginUser(user);
         reset();
-        navigate(HOME_PAGE);
+        // navigate(HOME_PAGE);
       } catch (error) {
         console.log(error);
       }

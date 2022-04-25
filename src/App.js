@@ -7,23 +7,27 @@ import LoginPage from './container/LoginPage';
 import history from './utils/history';
 import ProtectedRoute from './configs/ProtedRouter';
 
+import { useNavigate } from 'react-router-dom';
+
+
+const user = localStorage.getItem('USER') ? JSON.parse(localStorage.getItem('USER')) : {};
+
+
+
 function App() {
-  const isCheckPage = localStorage.getItem('USER') ? JSON.parse(localStorage.getItem('USER')) : {};
-  console.log(isCheckPage);
+   const [isLogin,setIsLogin] = useState(false)
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(Object.keys(user)?.length > 0){
+      navigate(HOME_PAGE)
+    }
+    
+  },[user])
   return (
     <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          <Route path={LOGIN_PAGE} element={<LoginPage />} />
-          <Route path = {HOME_PAGE} element= {<HomePage/>}/>
-          {/* <Route path={HOME_PAGE} element={<ProtectedRoute checkPage={isCheckPage} >
-            <HomePage/>
-          </ProtectedRoute>} /> */}
-          {/* {Object.keys(checkPage)?.length > 0 ? (
-             <Route path={LOGIN_PAGE} element={<LoginPage />} />
-          ) : (
-            <Route path={HOME_PAGE} element={<HomePage />} />
-           
-          )} */}
+          <Route path={LOGIN_PAGE} element={<LoginPage/>}/>
+          <Route path={HOME_PAGE} element={<HomePage/>}/>
         </Routes>
     </Suspense>
   );

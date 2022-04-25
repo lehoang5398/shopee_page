@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { HOME_PAGE } from ".";
+import { HOME_PAGE, LOGIN_PAGE } from ".";
 
 const ProtectedRoute = ({
-    checkPage,
+    user,
     // redirectPath = HOME_PAGE,
     children,
   }) => {
-    if (Object.keys(checkPage)?.length > 0) {
-      return <Navigate to={HOME_PAGE} replace />;
+    if (Object.keys(user)?.length === 0) {
+      return  <Navigate to={LOGIN_PAGE} replace />
     }
   
     return children;
