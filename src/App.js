@@ -1,15 +1,12 @@
-import React, { Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { HOME_PAGE, LOGIN_PAGE, NOT_FOUND_PAGE } from './configs';
 import HomePage from './container/HomePage';
 import LoginPage from './container/LoginPage';
 import NotFoundPage from './container/NotFoundPage';
 import ProtectedRoute from './configs/ProtedRouter';
+import OverLayProvider from './components/OverLay/provider';
 
 function App() {
   const r = [
@@ -34,7 +31,7 @@ function App() {
   ];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <OverLayProvider>
       <Router>
         <Routes>
           {r.map((route) => (
@@ -47,7 +44,7 @@ function App() {
           ))}
         </Routes>
       </Router>
-    </Suspense>
+    </OverLayProvider>
   );
 }
 

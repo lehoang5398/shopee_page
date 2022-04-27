@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import login from '../../api/ApiLoginClient';
 import { HOME_PAGE } from '../../configs';
+import useLoading from '../../hooks/userLoading';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('Please enter your email !'),
@@ -30,9 +31,10 @@ export default function LoginPage() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const token = localStorage.getItem('TOKEN') ?? null;
   const password = useRef({});
   const navigate = useNavigate();
+  const token = localStorage.getItem('TOKEN') ?? null;
+  const [showLoading, hideLoading] = useLoading();
 
   useEffect(() => {
     if (token !== null) {
@@ -45,10 +47,13 @@ export default function LoginPage() {
   function handleLogin(user) {
     const loginUser = async () => {
       try {
+        showLoading();
         await login.loginUser(user);
         reset();
         navigate(HOME_PAGE);
+        hideLoading();
       } catch (error) {
+        showLoading();
         console.log(error);
       }
     };

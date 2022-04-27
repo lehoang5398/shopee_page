@@ -1,33 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { APP_API_IMAGE } from '../../configs';
-import PaginationCommon from '../Pagination';
+import Pagination from '../Pagination';
 
-function TableItem({ listSearchItem }) {
-  
+function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
   function handleChangePrice(value) {
     const number = value.toString();
     return number.slice(0, 7).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   }
 
-  const [currentPage, setCurrentPage] = useState(1);
-
-  let NUM_OF_RECORDS = listSearchItem.length;
-  let LIMIT = 10;
-
-  const onPageChanged = useCallback(
-    (event, page) => {
-      event.preventDefault();
-      setCurrentPage(page);
-    },
-    [currentPage]
-  );
-
-  const currentComments = listSearchItem.slice(
-    (currentPage - 1) * LIMIT,
-    (currentPage - 1) * LIMIT + LIMIT
-  );
+  function handleChangeLimit(e) {
+    const number = Number(e.target.value);
+    onFilter({limit: number, newest: 0});
+  }
 
   return (
     <>
@@ -39,6 +25,8 @@ function TableItem({ listSearchItem }) {
             name="example_length"
             aria-controls="example"
             class="form-control input-sm"
+            onChange={handleChangeLimit}
+            defaultValue="10"
           >
             <option value="10">10</option>
             <option value="25">25</option>
@@ -84,7 +72,7 @@ function TableItem({ listSearchItem }) {
               </tr>
             </thead>
             <tbody>
-              {currentComments.map((itemProduct, indexProduct) => {
+              {listSearchItem.map((itemProduct, indexProduct) => {
                 return (
                   <tr key={indexProduct}>
                     <td>{indexProduct + 1}</td>
@@ -120,15 +108,7 @@ function TableItem({ listSearchItem }) {
               })}
             </tbody>
           </table>
-          {NUM_OF_RECORDS > 0 && (
-            <PaginationCommon
-              totalRecords={NUM_OF_RECORDS}
-              pageLimit={LIMIT}
-              pageNeighbours={1}
-              onPageChanged={onPageChanged}
-              currentPage={currentPage}
-            />
-          )}
+          <Pagination paginate={paginate} onChangeCurrentPage={onChangeCurrentPage}/>
         </div>
         <div style={{ width: '1%' }} />
       </div>

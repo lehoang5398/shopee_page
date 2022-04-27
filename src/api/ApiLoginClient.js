@@ -7,6 +7,7 @@ const login = {
       if (res) {
         localStorage.setItem('USER', JSON.stringify(res.user));
         localStorage.setItem('TOKEN', res.tokens.access.token);
+        localStorage.setItem('REFRESHTOKEN', res.tokens.refresh.token);
         return res && res.user;
       }
     });
@@ -17,7 +18,7 @@ const login = {
     return axiosClient.post(resource, Token).then((res) => {
       if (res) {
         localStorage.removeItem('USER');
-        localStorage.removeItem('ACCESSTOKEN');
+        localStorage.removeItem('TOKEN');
         localStorage.removeItem('REFRESHTOKEN');
       }
     });
