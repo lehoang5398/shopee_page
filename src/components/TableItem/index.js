@@ -4,7 +4,15 @@ import React from 'react';
 import { APP_API_IMAGE } from '../../configs';
 import Pagination from '../Pagination';
 
-function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
+function TableItem({
+  listProduct,
+  onChangeCurrentPage,
+  onChangeListSearch,
+  setCurrentPage,
+  pageCount,
+  showPageCount,
+  resetCurrentPage,
+}) {
   function handleChangePrice(value) {
     const number = value.toString();
     return number.slice(0, 7).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
@@ -12,9 +20,13 @@ function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
 
   function handleChangeLimit(e) {
     const number = Number(e.target.value);
-    onFilter({limit: number, newest: 0});
+    setCurrentPage(number);
+    showPageCount(number);
   }
 
+  function handleChangeList(e) {
+    onChangeListSearch(e.target.value);
+  }
   return (
     <>
       <div className="title-page">Shopee Tracking</div>
@@ -41,6 +53,7 @@ function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
             placeholder="Search"
             aria-label="Search"
             className="form-control"
+            onChange={handleChangeList}
           />
         </div>
       </div>
@@ -72,7 +85,7 @@ function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
               </tr>
             </thead>
             <tbody>
-              {listSearchItem.map((itemProduct, indexProduct) => {
+              {listProduct.map((itemProduct, indexProduct) => {
                 return (
                   <tr key={indexProduct}>
                     <td>{indexProduct + 1}</td>
@@ -95,7 +108,7 @@ function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
                     </td>
                     <td>
                       <a
-                        href="https://shopee.vn/item-i.85907828.5549563273"
+                        href={`https://shopee.vn/item-i.${itemProduct.shopid}.${itemProduct.itemid}`}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -108,7 +121,11 @@ function TableItem({ listSearchItem, onFilter, paginate,onChangeCurrentPage }) {
               })}
             </tbody>
           </table>
-          <Pagination paginate={paginate} onChangeCurrentPage={onChangeCurrentPage}/>
+          <Pagination
+            pageCount={pageCount}
+            onChangeCurrentPage={onChangeCurrentPage}
+            resetCurrentPage={resetCurrentPage}
+          />
         </div>
         <div style={{ width: '1%' }} />
       </div>

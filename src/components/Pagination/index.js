@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 
-function Pagination({ paginate,onChangeCurrentPage }) {
- 
+function Pagination({ pageCount, onChangeCurrentPage, resetCurrentPage }) {
   return (
     <div>
       <ReactPaginate
         previousLabel={'< Previous'}
         nextLabel={'Next >'}
         breakLabel="..."
-        pageCount={paginate}
+        pageCount={pageCount}
         marginPagesDisplayed={0}
         pageRangeDisplayed={5}
         containerClassName={'pagination justify-content-end mt-5'}
@@ -23,6 +22,7 @@ function Pagination({ paginate,onChangeCurrentPage }) {
         breakLinkClassName={'page-link'}
         activeClassName={'active'}
         onPageChange={onChangeCurrentPage}
+        initialPage={resetCurrentPage ?? 1}
       />
     </div>
   );

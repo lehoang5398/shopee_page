@@ -8,11 +8,14 @@ import useLoading from '../../hooks/userLoading';
 function HomePage() {
   const [showLoading, hideLoading] = useLoading();
   const [listSearchItem, setListSearchItem] = useState([]);
-  const [paginate, setPaginate] = useState();
+  const [listProduct, setListProduct] = useState([]);
+  const [currentPage, setCurrentPage] = useState(10);
+  const [resetCurrentPage, setResetCurrentPage] = useState(false);
+  const [pageCount, setPageCount] = useState(1); //hiển thị bao nhiêu trang paginate
   const [filter, setFilter] = useState({
     by: 'relevancy',
-    limit: 10,
-    newest: 0,
+    limit: 100,
+    newest: 100,
     order: 'desc',
     page_type: 'search',
     scenario: 'PAGE_GLOBAL_SEARCH',
@@ -20,13 +23,33 @@ function HomePage() {
     keyword: '',
   });
 
-  const onChangeCurrentPage = (page) => {
-    console.log(page)
+  //thay đổi page
+  function onChangeCurrentPage(tempPage) {
+    setResetCurrentPage(false);
+    const offSet = tempPage.selected * currentPage;
+    const perPage = (tempPage.selected + 1) * currentPage;
+    const newArr = listSearchItem.slice(offSet, perPage);
+    setListProduct([...newArr]);
   }
 
-  const onFilter = (data) => {
-    console.log(data)
-    setFilter(data)
+  // tìm kiếm
+  function onFilter(data) {
+    setFilter((prevFilter) => ({ ...prevFilter, ...data }));
+  }
+
+  //hiển thị bao nhiêu trang paginate
+  function showPageCount(number) {
+    if (filter.keyword !== '') {
+      const page = filter.limit / number;
+      setPageCount(page);
+      setResetCurrentPage(true);
+    }
+  }
+
+  //search table
+  function onChangeListSearch(value) {
+    //search table
+    console.log(value);
   }
 
   useEffect(() => {
@@ -36,7 +59,8 @@ function HomePage() {
           showLoading();
           const response = await productsApi.searchItem(filter);
           setListSearchItem(response.items);
-          setPaginate(response.total_count);
+          setPageCount(filter.limit / currentPage);
+          setResetCurrentPage(true);
           hideLoading();
         } catch (error) {
           showLoading();
@@ -46,13 +70,24 @@ function HomePage() {
       getProductSearch();
     }
   }, [filter]);
+
+  useEffect(() => {
+    const offSet = (pageCount - 1) * currentPage;
+    const perPage = pageCount * currentPage;
+    const newArr = listSearchItem.slice(offSet, perPage);
+    setListProduct(newArr);
+  }, [currentPage, listSearchItem]);
   return (
     <>
-      <SearchBox setFilter={setFilter} />
+      <SearchBox onFilter={onFilter} />
       <TableItem
-        listSearchItem={listSearchItem}
-        setFilter={onFilter}
-        paginate={paginate}
+        listProduct={listProduct}
+        onChangeCurrentPage={onChangeCurrentPage}
+        onChangeListSearch={onChangeListSearch}
+        setCurrentPage={setCurrentPage}
+        pageCount={pageCount}
+        showPageCount={showPageCount}
+        resetCurrentPage={resetCurrentPage}
       />
     </>
   );
