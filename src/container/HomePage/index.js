@@ -7,12 +7,14 @@ import useLoading from '../../hooks/userLoading';
 
 function HomePage() {
   const isFirst = useRef(true);
+  const inputRef = useRef(null);
   const [showLoading, hideLoading] = useLoading();
   const [listSearchItem, setListSearchItem] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [limitProducts, setLimitProducts] = useState(10);
   const [pageCount, setPageCount] = useState(1); // tổng số trang
   const [listProduct, setLisProduct] = useState([]);
+  const [listSearchProduct, setListSearchProduct] = useState([]);
   const [filter, setFilter] = useState({
     by: 'relevancy',
     limit: 100,
@@ -37,6 +39,24 @@ function HomePage() {
   // tìm kiếm
   function onFilter(data) {
     setFilter((prevFilter) => ({ ...prevFilter, ...data }));
+    inputRef.current.value = '';
+    setListSearchProduct([]);
+  }
+
+  //search table
+  function onChangeListSearch(value) {
+    if (value !== '') {
+      const searchProduct = listProduct.filter(
+        (item) =>
+          item.item_basic.name
+            .trim()
+            .toLowerCase()
+            .indexOf(value.trim().toLowerCase()) !== -1
+      );
+      setListSearchProduct([...searchProduct]);
+    } else {
+      setListSearchProduct([]);
+    }
   }
 
   //reset page về 0
@@ -47,11 +67,6 @@ function HomePage() {
       setCurrentPage(1);
     }
   }, [limitProducts]);
-
-  //search table
-  function onChangeListSearch(value) {
-    console.log(value);
-  }
 
   useEffect(() => {
     if (filter.keyword !== '') {
@@ -72,30 +87,33 @@ function HomePage() {
 
   useEffect(() => {
     if (listSearchItem.length > 0) {
+      const tempArr =
+        listSearchProduct.length > 0 ? listSearchProduct : listSearchItem;
       const offset = (currentPage - 1) * limitProducts;
       const amountProducts = limitProducts * currentPage;
-      const newArr = listSearchItem.slice(
+      const newArr = tempArr.slice(
         offset,
         amountProducts === 0 ? limitProducts : amountProducts
       );
-      const page = listSearchItem.length / limitProducts;
+      const page = tempArr.length / limitProducts;
 
       setPageCount(page);
       setLisProduct(newArr);
     }
-  }, [currentPage, listSearchItem, limitProducts]);
+  }, [currentPage, listSearchItem, limitProducts, listSearchProduct]);
 
   return (
     <>
       <SearchBox onFilter={onFilter} />
       <TableItem
         listProduct={listProduct}
-        F={onChangeCurrentPage}
+        onChangeCurrentPage={onChangeCurrentPage}
         onChangeListSearch={onChangeListSearch}
         setCurrentPage={setCurrentPage}
         pageCount={pageCount}
         currentPage={currentPage}
         onSetLimitProducts={onSetLimitProducts}
+        ref={inputRef}
       />
     </>
   );

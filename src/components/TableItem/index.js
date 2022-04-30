@@ -1,28 +1,57 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
-import React from 'react';
+import moment from 'moment';
+import React, { forwardRef } from 'react';
 import { APP_API_IMAGE } from '../../configs';
 import Pagination from '../Pagination';
 
-function TableItem({
-  listProduct,
-  onChangeCurrentPage,
-  onChangeListSearch,
-  setCurrentPage,
-  pageCount,
-  // showPageCount,
-  currentPage,
-  onSetLimitProducts,
-}) {
-  function handleChangePrice(value) {
-    const number = value.toString();
-    return number.slice(0, 7).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+function TableItem(
+  {
+    listProduct,
+    onChangeCurrentPage,
+    onChangeListSearch,
+    pageCount,
+    currentPage,
+    onSetLimitProducts,
+  },
+  ref
+) {
+  function showPrice(value) {
+    const number = value.price.toString();
+    return number
+      .slice(0, 7)
+      .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      .concat(value.currency);
+  }
+
+  function showRevenue(value) {
+    const number = value.price.toString().slice(0, 7);
+    const priceRevenue = Number(number);
+    return (priceRevenue * value.sold)
+      .toString()
+      .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+      .concat(value.currency);
+  }
+
+  function showFirstPost(value) {
+    // Past
+    const number = value.ctime.toString();
+    const date = number.concat('000');
+    const pastDay = moment(+date).format('DD');
+    const pastMonth = moment(+date).format('MM');
+    const pastYear = moment(+date).format('YYYY');
+    // Present
+    const presentDay = moment(new Date()).format('DD');
+    const presentMonth = moment(new Date()).format('MM');
+    const presentYear = moment(new Date()).format('YYYY');
+    const a = moment([presentYear, presentMonth - 1, presentDay]);
+    const b = moment([pastYear, pastMonth - 1, pastDay]);
+    return a.diff(b, 'days');
   }
 
   function handleChangeLimit(e) {
     const number = Number(e.target.value);
     onSetLimitProducts(number);
-    // showPageCount(number);
   }
 
   function handleChangeList(e) {
@@ -55,6 +84,7 @@ function TableItem({
             aria-label="Search"
             className="form-control"
             onChange={handleChangeList}
+            ref={ref}
           />
         </div>
       </div>
@@ -82,7 +112,6 @@ function TableItem({
                 <th>Rating</th>
                 <th>Hình ảnh</th>
                 <th>Link Shopee</th>
-                <th>Buff</th>
               </tr>
             </thead>
             <tbody>
@@ -91,16 +120,20 @@ function TableItem({
                   <tr key={indexProduct}>
                     <td>{indexProduct + 1}</td>
                     <td>{itemProduct.item_basic.name}</td>
-                    <td>{handleChangePrice(itemProduct.item_basic.price)}</td>
-                    <td></td>
-                    <td>25</td>
+                    <td>{showPrice(itemProduct.item_basic)}</td>
+                    <td>{itemProduct.item_basic.discount}</td>
+                    <td>{itemProduct.item_basic.sold}</td>
                     <td>1</td>
-                    <td>1</td>
-                    <td>11314 </td>
-                    <td>36,502,675 </td>
-                    <td>14</td>
-                    <td>16</td>
-                    <td>0.9</td>
+                    <td>{itemProduct.item_basic.stock}</td>
+                    <td>{showFirstPost(itemProduct.item_basic)}</td>
+                    <td>{showRevenue(itemProduct.item_basic)}</td>
+                    <td>{itemProduct.item_basic.cmt_count}</td>
+                    <td>{itemProduct.item_basic.liked_count}</td>
+                    <td>
+                      {Math.ceil(
+                        itemProduct.item_basic.item_rating.rating_star
+                      )}
+                    </td>
                     <td>
                       <img
                         src={`${APP_API_IMAGE}/${itemProduct.item_basic.image}`}
@@ -116,7 +149,6 @@ function TableItem({
                         Xem
                       </a>
                     </td>
-                    <td>buff</td>
                   </tr>
                 );
               })}
@@ -134,4 +166,4 @@ function TableItem({
   );
 }
 
-export default TableItem;
+export default forwardRef(TableItem);
