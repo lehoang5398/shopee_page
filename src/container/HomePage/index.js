@@ -1,17 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import productsApi from '../../api/ApiProductClient';
 import SearchBox from '../../components/SearchBox';
 import TableItem from '../../components/TableItem';
 import useLoading from '../../hooks/userLoading';
 
 function HomePage() {
+  const isFirst = useRef(true);
   const [showLoading, hideLoading] = useLoading();
   const [listSearchItem, setListSearchItem] = useState([]);
-  const [listProduct, setListProduct] = useState([]);
-  const [currentPage, setCurrentPage] = useState(10);
-  const [resetCurrentPage, setResetCurrentPage] = useState(false);
-  const [pageCount, setPageCount] = useState(1); //hiển thị bao nhiêu trang paginate
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limitProducts, setLimitProducts] = useState(10);
+  const [pageCount, setPageCount] = useState(1); // tổng số trang
+  const [listProduct, setLisProduct] = useState([]);
   const [filter, setFilter] = useState({
     by: 'relevancy',
     limit: 100,
@@ -25,11 +26,12 @@ function HomePage() {
 
   //thay đổi page
   function onChangeCurrentPage(tempPage) {
-    setResetCurrentPage(false);
-    const offSet = tempPage.selected * currentPage;
-    const perPage = (tempPage.selected + 1) * currentPage;
-    const newArr = listSearchItem.slice(offSet, perPage);
-    setListProduct([...newArr]);
+    setCurrentPage(tempPage.selected + 1);
+  }
+
+  //thay đổi số lượng sản phẩm hiển thị trên 1 trang
+  function onSetLimitProducts(value) {
+    setLimitProducts(value);
   }
 
   // tìm kiếm
@@ -37,18 +39,17 @@ function HomePage() {
     setFilter((prevFilter) => ({ ...prevFilter, ...data }));
   }
 
-  //hiển thị bao nhiêu trang paginate
-  function showPageCount(number) {
-    if (filter.keyword !== '') {
-      const page = filter.limit / number;
-      setPageCount(page);
-      setResetCurrentPage(true);
+  //reset page về 0
+  useEffect(() => {
+    if (isFirst.current) {
+      isFirst.current = false;
+    } else {
+      setCurrentPage(1);
     }
-  }
+  }, [limitProducts]);
 
   //search table
   function onChangeListSearch(value) {
-    //search table
     console.log(value);
   }
 
@@ -59,8 +60,6 @@ function HomePage() {
           showLoading();
           const response = await productsApi.searchItem(filter);
           setListSearchItem(response.items);
-          setPageCount(filter.limit / currentPage);
-          setResetCurrentPage(true);
           hideLoading();
         } catch (error) {
           showLoading();
@@ -72,22 +71,31 @@ function HomePage() {
   }, [filter]);
 
   useEffect(() => {
-    const offSet = (pageCount - 1) * currentPage;
-    const perPage = pageCount * currentPage;
-    const newArr = listSearchItem.slice(offSet, perPage);
-    setListProduct(newArr);
-  }, [currentPage, listSearchItem]);
+    if (listSearchItem.length > 0) {
+      const offset = (currentPage - 1) * limitProducts;
+      const amountProducts = limitProducts * currentPage;
+      const newArr = listSearchItem.slice(
+        offset,
+        amountProducts === 0 ? limitProducts : amountProducts
+      );
+      const page = listSearchItem.length / limitProducts;
+
+      setPageCount(page);
+      setLisProduct(newArr);
+    }
+  }, [currentPage, listSearchItem, limitProducts]);
+
   return (
     <>
       <SearchBox onFilter={onFilter} />
       <TableItem
         listProduct={listProduct}
-        onChangeCurrentPage={onChangeCurrentPage}
+        F={onChangeCurrentPage}
         onChangeListSearch={onChangeListSearch}
         setCurrentPage={setCurrentPage}
         pageCount={pageCount}
-        showPageCount={showPageCount}
-        resetCurrentPage={resetCurrentPage}
+        currentPage={currentPage}
+        onSetLimitProducts={onSetLimitProducts}
       />
     </>
   );

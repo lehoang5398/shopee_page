@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 
-function Pagination({ pageCount, onChangeCurrentPage, resetCurrentPage }) {
+function Pagination({ pageCount, onChangeCurrentPage, currentPage }) {
   return (
     <div>
       <ReactPaginate
@@ -22,7 +22,8 @@ function Pagination({ pageCount, onChangeCurrentPage, resetCurrentPage }) {
         breakLinkClassName={'page-link'}
         activeClassName={'active'}
         onPageChange={onChangeCurrentPage}
-        initialPage={resetCurrentPage ?? 1}
+        forcePage={currentPage - 1}
+        // renderOnZeroPageCount
       />
     </div>
   );

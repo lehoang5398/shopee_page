@@ -10,8 +10,9 @@ function TableItem({
   onChangeListSearch,
   setCurrentPage,
   pageCount,
-  showPageCount,
-  resetCurrentPage,
+  // showPageCount,
+  currentPage,
+  onSetLimitProducts,
 }) {
   function handleChangePrice(value) {
     const number = value.toString();
@@ -20,8 +21,8 @@ function TableItem({
 
   function handleChangeLimit(e) {
     const number = Number(e.target.value);
-    setCurrentPage(number);
-    showPageCount(number);
+    onSetLimitProducts(number);
+    // showPageCount(number);
   }
 
   function handleChangeList(e) {
@@ -124,7 +125,7 @@ function TableItem({
           <Pagination
             pageCount={pageCount}
             onChangeCurrentPage={onChangeCurrentPage}
-            resetCurrentPage={resetCurrentPage}
+            currentPage={currentPage}
           />
         </div>
         <div style={{ width: '1%' }} />
