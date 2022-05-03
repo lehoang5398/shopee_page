@@ -99,7 +99,7 @@ export default function LoginPage() {
         <button className="btn btn-lg btn-primary btn-block" type="submit">
           Sign in
         </button>
-        <p className="mt-5 mb-3 text-muted text-center">&copy; 2017-2021</p>
+        <p className="mt-5 mb-3 text-muted text-center">&copy; Cryptizen</p>
       </form>
     </div>
   );

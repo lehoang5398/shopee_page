@@ -4,6 +4,7 @@ import productsApi from '../../api/ApiProductClient';
 import SearchBox from '../../components/SearchBox';
 import TableItem from '../../components/TableItem';
 import useLoading from '../../hooks/userLoading';
+import _ from 'lodash';
 
 function HomePage() {
   const isFirst = useRef(true);
@@ -15,6 +16,7 @@ function HomePage() {
   const [pageCount, setPageCount] = useState(1); // tổng số trang
   const [listProduct, setLisProduct] = useState([]);
   const [listSearchProduct, setListSearchProduct] = useState([]);
+  const [sortProduct, setSortProduct] = useState('');
   const [filter, setFilter] = useState({
     by: 'relevancy',
     limit: 100,
@@ -86,7 +88,7 @@ function HomePage() {
   }, [filter]);
 
   useEffect(() => {
-    if (listSearchItem.length > 0) {
+    if (listSearchItem.length > 0 && sortProduct === '') {
       const tempArr =
         listSearchProduct.length > 0 ? listSearchProduct : listSearchItem;
       const offset = (currentPage - 1) * limitProducts;
@@ -99,9 +101,21 @@ function HomePage() {
 
       setPageCount(page);
       setLisProduct(newArr);
+    } else if (sortProduct) {
+      const tempArr =
+        listSearchProduct.length > 0 ? listSearchProduct : listSearchItem;
+      const offset = (currentPage - 1) * limitProducts;
+      const amountProducts = limitProducts * currentPage;
+      const newArrSort = _.orderBy(tempArr, [sortProduct], ['asc']);
+      const newArr = newArrSort.slice(
+        offset,
+        amountProducts === 0 ? limitProducts : amountProducts
+      );
+      const page = tempArr.length / limitProducts;
+      setPageCount(page);
+      setLisProduct(newArr);
     }
-  }, [currentPage, listSearchItem, limitProducts, listSearchProduct]);
-
+  }, [currentPage, listSearchItem, limitProducts, listSearchProduct, sortProduct]);
   return (
     <>
       <SearchBox onFilter={onFilter} />
@@ -114,6 +128,7 @@ function HomePage() {
         currentPage={currentPage}
         onSetLimitProducts={onSetLimitProducts}
         ref={inputRef}
+        setSortProduct={setSortProduct}
       />
     </>
   );
