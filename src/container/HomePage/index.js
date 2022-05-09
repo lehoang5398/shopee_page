@@ -1,22 +1,21 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import productsApi from '../../api/ApiProductClient';
 import SearchBox from '../../components/SearchBox';
 import TableItem from '../../components/TableItem';
 import useLoading from '../../hooks/userLoading';
-import _ from 'lodash';
 
 function HomePage() {
   const isFirst = useRef(true);
   const inputRef = useRef(null);
   const [showLoading, hideLoading] = useLoading();
+  const [listProduct, setLisProduct] = useState([]);
   const [listSearchItem, setListSearchItem] = useState([]);
+  const [listSearchProduct, setListSearchProduct] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [limitProducts, setLimitProducts] = useState(10);
   const [pageCount, setPageCount] = useState(1); // tổng số trang
-  const [listProduct, setLisProduct] = useState([]);
-  const [listSearchProduct, setListSearchProduct] = useState([]);
-  const [sortProduct, setSortProduct] = useState('');
   const [filter, setFilter] = useState({
     by: 'relevancy',
     limit: 100,
@@ -27,6 +26,31 @@ function HomePage() {
     version: 2,
     keyword: '',
   });
+
+  const newListProduct = [];
+  const onChangeShowQuantityInMonth = async (value) => {
+    try {
+      showLoading();
+      const response = await productsApi.cmtSearchItem(value);
+      for (let i = 0; i < listProduct.length; i += 1) {
+        if (
+          listProduct[i].itemid === response.itemid &&
+          listProduct[i].shopid === response.shopid
+        ) {
+          newListProduct.push({
+            ...listProduct[i],
+            ratings: response,
+          });
+        }
+      }
+      if (newListProduct.length === 10) {
+        setLisProduct(newListProduct);
+      }
+      hideLoading();
+    } catch (error) {
+      console.log('Failed to Fetch Product', error);
+    }
+  };
 
   //thay đổi page
   function onChangeCurrentPage(tempPage) {
@@ -61,6 +85,29 @@ function HomePage() {
     }
   }
 
+  function onChangeSortProductName() {
+    const newArrSort = listSearchItem.sort((a, b) =>
+      a.item_basic.name.localeCompare(b.item_basic.name)
+    );
+    setListSearchItem([...newArrSort]);
+  }
+
+  function onChangeSortProductOfPrice() {
+    const newArrSort = listSearchItem.sort((a, b) => {
+      const sortA = a.item_basic.price.toString().slice(0, 7);
+      const sortB = b.item_basic.price.toString().slice(0, 7);
+      return Number(sortA) - Number(sortB);
+    });
+    setListSearchItem([...newArrSort]);
+  }
+
+  function onChangeSortProductOfDiscount() {
+    const newArrSort = listSearchItem.sort(
+      (a, b) => a.item_basic.raw_discount - b.item_basic.raw_discount
+    );
+    setListSearchItem([...newArrSort]);
+  }
+
   //reset page về 0
   useEffect(() => {
     if (isFirst.current) {
@@ -88,7 +135,7 @@ function HomePage() {
   }, [filter]);
 
   useEffect(() => {
-    if (listSearchItem.length > 0 && sortProduct === '') {
+    if (listSearchItem.length > 0) {
       const tempArr =
         listSearchProduct.length > 0 ? listSearchProduct : listSearchItem;
       const offset = (currentPage - 1) * limitProducts;
@@ -101,21 +148,8 @@ function HomePage() {
 
       setPageCount(page);
       setLisProduct(newArr);
-    } else if (sortProduct) {
-      const tempArr =
-        listSearchProduct.length > 0 ? listSearchProduct : listSearchItem;
-      const offset = (currentPage - 1) * limitProducts;
-      const amountProducts = limitProducts * currentPage;
-      const newArrSort = _.orderBy(tempArr, [sortProduct], ['asc']);
-      const newArr = newArrSort.slice(
-        offset,
-        amountProducts === 0 ? limitProducts : amountProducts
-      );
-      const page = tempArr.length / limitProducts;
-      setPageCount(page);
-      setLisProduct(newArr);
     }
-  }, [currentPage, listSearchItem, limitProducts, listSearchProduct, sortProduct]);
+  }, [currentPage, listSearchItem, limitProducts, listSearchProduct]);
   return (
     <>
       <SearchBox onFilter={onFilter} />
@@ -128,7 +162,10 @@ function HomePage() {
         currentPage={currentPage}
         onSetLimitProducts={onSetLimitProducts}
         ref={inputRef}
-        setSortProduct={setSortProduct}
+        onChangeShowQuantityInMonth={onChangeShowQuantityInMonth}
+        onChangeSortProductName={onChangeSortProductName}
+        onChangeSortProductOfPrice={onChangeSortProductOfPrice}
+        onChangeSortProductOfDiscount={onChangeSortProductOfDiscount}
       />
     </>
   );

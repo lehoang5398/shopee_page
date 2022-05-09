@@ -7,8 +7,8 @@
 
 .title-page {
   font-size: 25px;
-  margin-top: 20px;
   text-align: center;
+  padding-top: 120px;
 }
 
 .entries-search {
@@ -39,6 +39,7 @@
 .log-out {
   text-align: center;
   display: flex;
+  padding-right: 10px;
 }
 .log-out button {
   color: #fff;
