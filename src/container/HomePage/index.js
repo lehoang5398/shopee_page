@@ -43,7 +43,7 @@ function HomePage() {
           });
         }
       }
-      if (newListProduct.length === 10) {
+      if (newListProduct.length === limitProducts) {
         setLisProduct(newListProduct);
       }
       hideLoading();
