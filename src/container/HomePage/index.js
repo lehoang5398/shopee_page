@@ -94,9 +94,9 @@ function HomePage() {
 
   function onChangeSortProductOfPrice() {
     const newArrSort = listSearchItem.sort((a, b) => {
-      const sortA = a.item_basic.price.toString().slice(0, 7);
-      const sortB = b.item_basic.price.toString().slice(0, 7);
-      return Number(sortA) - Number(sortB);
+      const sortA = Number(a.item_basic.price.toString().slice(0, 7));
+      const sortB = Number(b.item_basic.price.toString().slice(0, 7));
+      return sortA - sortB;
     });
     setListSearchItem([...newArrSort]);
   }
