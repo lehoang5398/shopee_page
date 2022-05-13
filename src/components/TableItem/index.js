@@ -3,7 +3,6 @@
 import moment from 'moment';
 import React, { forwardRef, useEffect } from 'react';
 import { BiSortAlt2 } from 'react-icons/bi';
-import { array } from 'yup';
 import { APP_API_IMAGE } from '../../configs';
 import Pagination from '../Pagination';
 
@@ -16,24 +15,9 @@ function TableItem(
     currentPage,
     onSetLimitProducts,
     onChangeShowQuantityInMonth,
-    onChangeSortProductName,
-    onChangeSortProductOfPrice,
-    onChangeSortProductOfDiscount,
   },
   ref
 ) {
-  function handleSortName() {
-    onChangeSortProductName();
-  }
-
-  function handleSortPrice() {
-    onChangeSortProductOfPrice();
-  }
-
-  function handleSortDisCount() {
-    onChangeSortProductOfDiscount();
-  }
-
   function showPrice(value) {
     const number = value.price.toString();
     return number
@@ -159,45 +143,19 @@ function TableItem(
             <thead>
               <tr>
                 <th>#</th>
-                <th className="cursor" onClick={handleSortName}>
-                  Tên sản phẩm <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor" onClick={handleSortPrice}>
-                  Giá <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor" onClick={handleSortDisCount}>
-                  Giảm <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Đã bán <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Trong tháng <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Tồn <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Số ngày đăng <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Doanh thu <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Comment <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Liked <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Rating <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Hình ảnh <BiSortAlt2 className="icon-default" />
-                </th>
-                <th className="cursor">
-                  Link Shopee <BiSortAlt2 className="icon-default" />
-                </th>
+                <th className="cursor">Tên sản phẩm</th>
+                <th className="cursor">Giá</th>
+                <th className="cursor">Giảm</th>
+                <th className="cursor">Đã bán</th>
+                <th className="cursor">Trong tháng</th>
+                <th className="cursor">Tồn</th>
+                <th className="cursor">Số ngày đăng</th>
+                <th className="cursor">Doanh thu</th>
+                <th className="cursor">Comment</th>
+                <th className="cursor">Liked</th>
+                <th className="cursor">Rating</th>
+                <th className="cursor">Hình ảnh</th>
+                <th className="cursor">Link Shopee</th>
               </tr>
             </thead>
             <tbody>

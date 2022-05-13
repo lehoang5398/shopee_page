@@ -59,17 +59,6 @@
   justify-content: space-between !important;
 }
 
-.icon-default {
-  color: #ddd;
-  font-size: 20px;
-  cursor: pointer;
-  text-align: right;
-}
-
-.icon-default:active {
-  color: rgba(206, 186, 186, 0.33);
-}
-
 .cursor {
   cursor: pointer;
 }

@@ -85,29 +85,6 @@ function HomePage() {
     }
   }
 
-  function onChangeSortProductName() {
-    const newArrSort = listSearchItem.sort((a, b) =>
-      a.item_basic.name.localeCompare(b.item_basic.name)
-    );
-    setListSearchItem([...newArrSort]);
-  }
-
-  function onChangeSortProductOfPrice() {
-    const newArrSort = listSearchItem.sort((a, b) => {
-      const sortA = Number(a.item_basic.price.toString().slice(0, 7));
-      const sortB = Number(b.item_basic.price.toString().slice(0, 7));
-      return sortA - sortB;
-    });
-    setListSearchItem([...newArrSort]);
-  }
-
-  function onChangeSortProductOfDiscount() {
-    const newArrSort = listSearchItem.sort(
-      (a, b) => a.item_basic.raw_discount - b.item_basic.raw_discount
-    );
-    setListSearchItem([...newArrSort]);
-  }
-
   //reset page về 0
   useEffect(() => {
     if (isFirst.current) {
@@ -163,9 +140,6 @@ function HomePage() {
         onSetLimitProducts={onSetLimitProducts}
         ref={inputRef}
         onChangeShowQuantityInMonth={onChangeShowQuantityInMonth}
-        onChangeSortProductName={onChangeSortProductName}
-        onChangeSortProductOfPrice={onChangeSortProductOfPrice}
-        onChangeSortProductOfDiscount={onChangeSortProductOfDiscount}
       />
     </>
   );
